@@ -26,5 +26,8 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 
 e = xml.etree.ElementTree.fromstring(EMPTY_CONFIG_XML)
 
-for child in e:
-print (child.tag ,": ",child.text)
+for child in e.iter(tag='projectName'):
+  print (child.tag ,": ",child.text)
+
+for child in e.iter(tag='targetUrl'):
+  print (child.tag ,": ",child.text)
