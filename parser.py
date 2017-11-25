@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup  # required for XMl Parser
 
 
-def parse_xml(config_file, tag):
+def parse_xml(config_xml, tag):
     """
     It parses a given xml file and returns the data that between the tags
-    :param config_file: must be a xml file
+    :param config_xml: must be a xml string
     :param tag: must be a  attribute
     :return:
     Raise 3 Exception;
@@ -12,20 +12,12 @@ def parse_xml(config_file, tag):
         2. for file may be empty or may not be the xml extension
     """
     try:
-        file = open(config_file, 'r')
-        read = file.read()
+        soup = BeautifulSoup(config_xml, 'xml')
 
-        soup = BeautifulSoup(read, 'xml')
-        if soup is None:
-            file.close()
-            raise Exception('File not found or it is not xml')
+        attribute = soup.find(tag)
+        if attribute is None:
+            raise Exception('Cant find tag')
         else:
-            attribute = soup.find(tag)
-            if attribute is None:
-                file.close()
-                raise Exception('Cant find tag')
-            else:
-                return attribute.text
-
+            return attribute.text
     except IOError:
         raise IOError("Can't find config file")
