@@ -1,1 +1,38 @@
-//test
+from parser import parse_xml
+
+TAGS = ['githubUrl', 'projectName', 'commitId',
+        'targetUrl', 'buildResult', 'buildResultDetail', 'testResult']
+
+
+def get_job_config(job_name, jenkins_host):
+    """
+    Controls jenkins for job's name and returns its config
+    :param job_name: Job name
+    :param jenkins_host: jenkins server
+    :return: XML string
+    """
+
+    if jenkins_host.has_job(job_name):
+        job = jenkins_host.get_job(job_name)
+        return job.get_config()
+    else:
+        raise Exception("Can't find the job")
+
+
+def get_info(job_name, jenkins_host):
+    """
+    Parse the given xml file with TAGS constant
+    :param job_name: Job name
+    :param jenkins_host: jenkins server
+    :return: parsed xml data
+    """
+    info = {}
+    try:
+        config_file = get_job_config(job_name, jenkins_host)
+
+        for i in TAGS:
+            info[i] = parse_xml(config_file, i)
+
+        return info
+    except Exception as e:
+        print(e)
