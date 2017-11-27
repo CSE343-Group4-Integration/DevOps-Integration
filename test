@@ -1,4 +1,7 @@
 from parser import parse_xml
+from jenkinsapi.jenkins import Jenkins
+
+
 
 TAGS = ['githubUrl', 'projectName', 'commitId',
         'targetUrl', 'buildResult', 'buildResultDetail', 'testResult']
