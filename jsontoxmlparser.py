@@ -38,7 +38,6 @@ def setter(text, eltree, tag):
 	for child in e:
 		if(child.tag == tag):
 			child.text = text
-			tree.write('empty_project.xml')
 			break
 
 #Parametreler:
