@@ -12,6 +12,7 @@ def setter(text, eltree, tag):
 	for child in e:
 		if(child.tag == tag):
 			child.text = text
+			tree.write('empty_project.xml')
 			break
 
 #Parametreler:
@@ -39,5 +40,3 @@ def setBuildResult(text, eltree):
 
 def setBuildResultDetail(text, eltree):
 	setter(text, eltree, "buildResultDetail")
-
-tree.write('output.xml')
