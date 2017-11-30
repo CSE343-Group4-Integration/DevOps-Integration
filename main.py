@@ -11,6 +11,8 @@ import xmltodict
 import requests
 import parserDeneme as parser
 import GetAndSetXML as jenkinsGetSet
+import request
+
 EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <project>
   <keepDependencies>false</keepDependencies>
@@ -78,7 +80,7 @@ def mainFunction(jsonfile):
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'buildResult','Waiting-Result')
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'methodname','build')
       newjson=parser.xml2Json(newxml)
-      requests.post("http://httpbin.org/post", data=json.dumps(newjson))
+      requests.post("http://localhost:8081/build", data=json.dumps(newjson))
 
     elif methodname=="check-build-status":
       buildstatus=getter(xmlfile,'buildResult')
@@ -92,7 +94,17 @@ def mainFunction(jsonfile):
         newjson=parser.xml2Json(newxml)
         requests.post("http://localhost:8081/code", data=json.dumps(newjson))
     elif methodname=="check-test-status":
-      print("create")
+      testResult = getter(xmlfile, 'testResult')
+      if testResult == 'TRUE':
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'methodname', 'deploy')
+        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deployResult', 'waiting')
+        newjson = parser.xml2Json(newxml)      
+        request.postRequest(newjson, 'deployment')
+      else:
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'methodname', 'testFailed')
+        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'testResult', 'failed')
+        newjson = parser.xml2Json(newxml)      
+        request.postRequest(newjson, 'code')
     elif methodname=="check-deploy-status":
       print("create")
 
