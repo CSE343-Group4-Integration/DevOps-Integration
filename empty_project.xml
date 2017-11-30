@@ -18,4 +18,8 @@
   <buildResult></buildResult><!--Build--><!--Code&plan(fail),Test(Pass)-->
   <buildResultDetail></buildResultDetail><!--Build--><!--Code&Plan(Fail)-->
   <testResult></testResult><!--Test--><!--Deployment(Pass), Code&plan(Fail)-->
+  
+  <githubUserid></githubUserid><!--Code-->
+  <githubPassport></githubPassport><!--Code-->
+  <kartId></kartId><!--Code-->
 </project>
