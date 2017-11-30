@@ -30,10 +30,6 @@ jsonString = '''{
     }
 }'''
 
-xmlString = xmltodict.unparse(json.loads(jsonString), pretty=True)
-
-e = ET.fromstring(xmlString)
-
 #Parametreler:
 #text = yazacagimiz string
 #eltree = xmli cektigimiz elementTree
@@ -70,6 +66,16 @@ def setBuildResult(text, eltree):
 
 def setBuildResultDetail(text, eltree):
 	setter(text, eltree, "buildResultDetail")
+
+def jsontoxml(jsonString):
+	return xmltodict.unparse(json.loads(jsonString), pretty=True)
 	
+def xmltojson(xmlString):
+	return json.dumps(xmltodict.parse(EMPTY_CONFIG_XML), indent=4)
+
+xmlString = jsontoxml(jsonString)
+
+e = ET.fromstring(xmlString)
+
 for child in e:
-	print(child.tag, " ", child.text)	 
+	print(child.tag, " ", child.text)
