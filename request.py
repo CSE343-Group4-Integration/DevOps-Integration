@@ -6,4 +6,8 @@ payload = {
 	"owner": "Group7",
 	"method": "undeploy"
 }
-requests.post("http://localhost:8081/monitor", data=json.dumps(payload))
+
+def postRequest(jsonData, group):
+	requests.post("http://localhost:8081/"+str(group), data=json.dumps(jsonData))
+
+postRequest(payload, 'monitor')
