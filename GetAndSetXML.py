@@ -66,6 +66,11 @@ def setConfigXML(projectName,xmlFile,tagName,newTagValue):
     server.reconfig_job(projectName, str)
     return server.get_job_config(projectName)
 
+def setChangedConfigXML(projectName,xmlFile):
+    server.reconfig_job(projectName, xmlFile)
+    return server.get_job_config(projectName)
+
+
 #server.create_job('testJob', jenkins.EMPTY_CONFIG_XML)
 
 print (getConfigXML("testJob"))
