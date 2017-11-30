@@ -78,7 +78,7 @@ def mainFunction(jsonfile):
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'buildResult','Waiting-Result')
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'methodname','build')
       newjson=parser.xml2Json(newxml)
-      requests.post("http://httpbin.org/post", data=json.dumps(newjson))
+      requests.post("http://localhost:8081/build", data=json.dumps(newjson))
 
     elif methodname=="check-build-status":
       buildstatus=getter(xmlfile,'buildResult')
