@@ -27,3 +27,8 @@ jsonString = json.dumps(xmltodict.parse(EMPTY_CONFIG_XML), indent=4)
  
 print("\nJSON output(output.json):")
 print(jsonString)
+
+xmlString = xmltodict.unparse(json.loads(jsonString), pretty=True)
+ 
+print('\nXML output(output.xml):')
+print(xmlString)
