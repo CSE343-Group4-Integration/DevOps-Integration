@@ -1,16 +1,29 @@
 import json
 import xmltodict
  
-with open("empty_project.xml", 'r') as f:
-    xmlString = f.read()
+EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class='jenkins.scm.NullSCM'/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class='vector'/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders/>
+  <publishers/>
+  <buildWrappers/>
+  <githubUrl>wwww.aaa.com</githubUrl><!--Code&plan-->
+  <projectName></projectName><!--Code&plan--><!--Build,Deployment-->
+  <commitId></commitId><!--Code&plan--><!--Deployment-->
+  <targetUrl></targetUrl><!--Code&plan--><!--Build,Test-->
+  <buildResult></buildResult><!--Build--><!--Code&plan(fail),Test(Pass)-->
+  <buildResultDetail></buildResultDetail><!--Build--><!--Code&Plan(Fail)-->
+  <testResult></testResult><!--Test--><!--Deployment(Pass), Code&plan(Fail)-->
+</project>'''
  
-print("XML :")
-print(xmlString)
-     
-jsonString = json.dumps(xmltodict.parse(xmlString), indent=4)
+jsonString = json.dumps(xmltodict.parse(EMPTY_CONFIG_XML), indent=4)
  
 print("\nJSON output(output.json):")
 print(jsonString)
- 
-with open("output.json", 'w') as f:
-    f.write(jsonString)
