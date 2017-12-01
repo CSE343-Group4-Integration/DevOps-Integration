@@ -41,6 +41,7 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <test_result></test_result><!--Test--><!--Deployment(Pass), Code&plan(Fail)-->
   <test_result_detail></test_result_detail>
   <deploy_result></deploy_result>
+  <deploy_result_detail></deploy_result_detail>
   <object_type></object_type>
 
 </project>'''
@@ -128,7 +129,15 @@ def mainFunction(jsonfile):
         newjson = parser.xml2Json(newxml)      
         request.postRequest(newjson, 'code')
     elif methodname=="check-deploy-status":
-      print("create")
+      deployResult = getter(xmlfile, 'deploy_result')
+      if deployResult == 'TRUE':
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'complete')
+	jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'true')
+      else:
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'deploy_failed')
+        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'false')
+        newjson = parser.xml2Json(newxml)      
+        request.postRequest(newjson, 'code')
 
 server = jenkins.Jenkins('http://localhost:8080/', username='admin',password='1234')
 mainFunction(parser.xml2Json(EMPTY_CONFIG_XML))
