@@ -24,11 +24,11 @@ def json_setter(j_string, tag, entry):
       
 '''
 #Example usage      
-EMPTY_CONFIG_XML = json_setter(EMPTY_CONFIG_XML, 'method', 'new')      
-print json_getter(EMPTY_CONFIG_XML, 'method')
+EMPTY_CONFIG_XML = json_setter(Example_json, 'method', 'new')      
+print json_getter(Example_json, 'method')
 
 #Example json string
-EMPTY_CONFIG_XML = '{
+EXample_json = '{
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"title": "Request information",
 	"type": "object",
