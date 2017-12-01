@@ -159,5 +159,5 @@ server = jenkins.Jenkins('http://localhost:8080/', username='skole',password='12
 # prints XML configuration
 
 
-#mainFunction(TEST_JSON_REQ)
-print(parser.Json2Xml(TEST_JSON_REQ))
+mainFunction(TEST_JSON_REQ)
+#print(parser.Json2Xml(TEST_JSON_REQ))
