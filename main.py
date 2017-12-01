@@ -72,15 +72,30 @@ def mainFunction(jsonfile):
     methodname=getter(xmlfile,'method_name')
 
     if methodname=="createjob":
-      name=(getter(xmlfile, 'project_name'))
-      EMPTY_CONFIG_XML=setter(name,EMPTY_CONFIG_XML,'project_name')
-      createJob(name)
-      #requests.post("http://localhost:8081/Deployment", data=json.dumps(jsonfile))
+      project_name=(getter(xmlfile, 'project_name'))
+      card_id=(getter(xmlfile, 'card_id'))
+      github_login=(getter(xmlfile, 'github_login'))
+      github_password=(getter(xmlfile, 'github_password'))
+      repository_url=(getter(xmlfile, 'repository_url')
+      target_url=(getter(xmlfile, 'target_url')
+      commit_id=(getter(xmlfile, 'commit_id')
+      
+      EMPTY_CONFIG_XML=setter(project_name,EMPTY_CONFIG_XML,'project_name')
+      EMPTY_CONFIG_XML=setter(card_id,EMPTY_CONFIG_XML,'card_id')
+      EMPTY_CONFIG_XML=setter(github_login,EMPTY_CONFIG_XML,'github_login')
+      EMPTY_CONFIG_XML=setter(github_password,EMPTY_CONFIG_XML,'github_password')
+      EMPTY_CONFIG_XML=setter(repository_url,EMPTY_CONFIG_XML,'repository_url')
+      EMPTY_CONFIG_XML=setter(target_url,EMPTY_CONFIG_XML,'target_url')
+      EMPTY_CONFIG_XML=setter(commit_id,EMPTY_CONFIG_XML,'commit_id')
+      
+      createJob(project_name)
+      request.postRequest(jsonfile, 'deployment'))
+      
     elif methodname=="deletejob":
       name=(getter(xmlfile, 'project_name'))
       EMPTY_CONFIG_XML=setter(name,EMPTY_CONFIG_XML,'project_name')
       deleteJob(name)
-      #requests.post("http://localhost:8081/Deployment", data=json.dumps(jsonfile))
+      request.postRequest(jsonfile, 'deployment')
       
     elif methodname=="build":
     
