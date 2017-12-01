@@ -49,14 +49,7 @@ config_xml – New XML configuration, str
 '''
 
 
-server = jenkins.Jenkins('http://localhost:8080', username='lutfullah', password='Password')
-user = server.get_whoami()
-
-
-print ("////////////////////////////////////////////////////")
-print('Hello %s  ' % (user['fullName']))
-print ("////////////////////////////////////////////////////")
-
+server = jenkins.Jenkins('http://localhost:8080', username='skole', password='1234123121')
 
 def getConfigXML(projectName):
     return server.get_job_config(projectName)
@@ -72,10 +65,3 @@ def setChangedConfigXML(projectName,xmlFile):
 
 
 #server.create_job('testJob', jenkins.EMPTY_CONFIG_XML)
-
-print (getConfigXML("testJob"))
-print ("////////////////////////////////////////////////////")
-
-print (setConfigXML('testJob',getConfigXML("testJob"),'builders','Lutfullah TURKER'))
-
-

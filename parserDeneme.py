@@ -36,7 +36,7 @@ def xml2Json(inpXml):
 
 
 def Json2Xml(inpJson):
-    xmlString = xmltodict.unparse(json.loads(inpJson), pretty=True)
+    xmlString = xmltodict.unparse({'root': json.loads(inpJson)}, pretty=True)
     return xmlString
 
 
@@ -44,4 +44,4 @@ def Json2Xml(inpJson):
 #server = jenkins.Jenkins(JENKINS_URL,JENKINS_USER,JENKINS_PASS)
 
 
-print(Json2Xml(xml2Json(EMPTY_CONFIG_XML)))
+#print(Json2Xml(xml2Json(EMPTY_CONFIG_XML)))

@@ -8,7 +8,6 @@ import xml.etree.ElementTree as ET
 import jenkins
 import json
 import xmltodict
-import requests
 import parserDeneme as parser
 import GetAndSetXML as jenkinsGetSet
 import request
@@ -46,6 +45,19 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 
 </project>'''
 
+TEST_JSON_REQ = '''{  "schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Request information",
+  "type": "object",
+  "description": "Information necessary to access project sources on github repository and method to be applied",
+  "method_name": "createjob",
+  "object_type": "general",
+  "github_login": "user",
+  "github_password": "pass",
+  "card_id": "1",
+  "repository_url": "https://github.com/CSE343-Group4-Integration/DevOps-Integration",
+  "project_name": "denemeJson"
+}'''
+
 def setter(text, xmlString, tag):
 	e = ET.fromstring(xmlString)
 	for child in e:
@@ -70,16 +82,18 @@ def deleteJob(project_name):
 
 def mainFunction(jsonfile):
     xmlfile=parser.Json2Xml(jsonfile)
+    print('-----------')
+    print(xmlfile)
     methodname=getter(xmlfile,'method_name')
-
+    global EMPTY_CONFIG_XML
     if methodname=="createjob":
       project_name=(getter(xmlfile, 'project_name'))
       card_id=(getter(xmlfile, 'card_id'))
       github_login=(getter(xmlfile, 'github_login'))
       github_password=(getter(xmlfile, 'github_password'))
-      repository_url=(getter(xmlfile, 'repository_url')
-      target_url=(getter(xmlfile, 'target_url')
-      commit_id=(getter(xmlfile, 'commit_id')
+      repository_url=(getter(xmlfile, 'repository_url'))
+      target_url = (getter(xmlfile, 'target_url'))
+      commit_id=(getter(xmlfile, 'commit_id'))
       
       EMPTY_CONFIG_XML=setter(project_name,EMPTY_CONFIG_XML,'project_name')
       EMPTY_CONFIG_XML=setter(card_id,EMPTY_CONFIG_XML,'card_id')
@@ -90,7 +104,7 @@ def mainFunction(jsonfile):
       EMPTY_CONFIG_XML=setter(commit_id,EMPTY_CONFIG_XML,'commit_id')
       
       createJob(project_name)
-      request.postRequest(jsonfile, 'deployment'))
+      request.postRequest(jsonfile, 'deployment')
       
     elif methodname=="deletejob":
       name=(getter(xmlfile, 'project_name'))
@@ -102,7 +116,7 @@ def mainFunction(jsonfile):
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'build_result','waiting')
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','build')
       newjson=parser.xml2Json(newxml)
-      requests.post("http://localhost:8081/build", data=json.dumps(newjson))
+      request.postRequest(newjson, 'build')
 
     elif methodname=="check-build-status":
       buildstatus=getter(xmlfile,'build_result')
@@ -110,11 +124,11 @@ def mainFunction(jsonfile):
         jenkinsGetSet.setConfigXML(projectname,xmlfile,'test_result','waiting')
         newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','test')
         newjson=parser.xml2Json(newxml)
-        requests.post("http://localhost:8081/test", data=json.dumps(newjson))
+        request.postRequest(newjson, 'test')
       else:
         newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','build-status')
         newjson=parser.xml2Json(newxml)
-        requests.post("http://localhost:8081/code", data=json.dumps(newjson))
+        request.postRequest(newjson, 'code')
     elif methodname=="check-test-status":
       testResult = getter(xmlfile, 'test_result')
       if testResult == 'TRUE':
@@ -132,20 +146,18 @@ def mainFunction(jsonfile):
       deployResult = getter(xmlfile, 'deploy_result')
       if deployResult == 'TRUE':
         jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'complete')
-	jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'true')
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'true')
       else:
         jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'deploy_failed')
         newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'false')
         newjson = parser.xml2Json(newxml)      
         request.postRequest(newjson, 'code')
 
-server = jenkins.Jenkins('http://localhost:8080/', username='admin',password='1234')
-mainFunction(parser.xml2Json(EMPTY_CONFIG_XML))
-'''
-server = jenkins.Jenkins('http://localhost:8080',"mehmet","4444")
-my_job = server.get_job_config('denemeapi')
-print(my_job)
-jsonlast=JsonToXml(XmlToJson(my_job))
-print(jsonlast)
-'''
+server = jenkins.Jenkins('http://localhost:8080/', username='skole',password='1234123121')
+#mainFunction(parser.xml2Json(EMPTY_CONFIG_XML))
+
 # prints XML configuration
+
+
+#mainFunction(TEST_JSON_REQ)
+print(parser.Json2Xml(TEST_JSON_REQ))
