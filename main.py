@@ -28,7 +28,7 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <buildWrappers/>
   <methodname>createjob</methodname>
   <githubUrl></githubUrl><!--Code&plan-->
-  <projectName>deneme5</projectName><!--Code&plan--><!--Build,Deployment-->
+  <projectName></projectName><!--Code&plan--><!--Build,Deployment-->
   <commitId></commitId><!--Code&plan--><!--Deployment-->
   <targetUrl></targetUrl><!--Code&plan--><!--Build,Test-->
   <buildResult></buildResult><!--Build--><!--Code&plan(fail),Test(Pass)-->
@@ -39,6 +39,15 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <kartId></kartId><!--Code-->
   <deployResult></deployResult>
 </project>'''
+
+def setter(text, xmlString, tag):
+	e = ET.fromstring(xmlString)
+	for child in e:
+		if(child.tag == tag):
+			child.text = text
+			break
+	return ET.tostring(e)
+
 
 def getter(xmlString, tag):
   e = ET.fromstring(xmlString)
@@ -58,23 +67,16 @@ def mainFunction(jsonfile):
     xmlfile=parser.Json2Xml(jsonfile)
     methodname=getter(xmlfile,'methodname')
     if methodname=="createjob":
-      createJob(str(getter(EMPTY_CONFIG_XML, 'projectName')))
-      payload = {
-          "id": "1",
-          "name": "TestProject",
-          "owner": "Group7",
-          "method": "create"
-      }
-      #requests.post("http://localhost:8081/"+"Deployment", data=json.dumps(payload))
+      name=(getter(xmlfile, 'projectName'))
+      EMPTY_CONFIG_XML=setter(name,EMPTY_CONFIG_XML,'projectName')
+      createJob(name)
+      #requests.post("http://localhost:8081/Deployment", data=json.dumps(jsonfile))
     elif methodname=="deletejob":
-      deleteJob(str(getter(EMPTY_CONFIG_XML, 'projectName')))
-      payload = {
-          "id": "1",
-          "name": "TestProject",
-          "owner": "Group7",
-          "method": "delete"
-      }
-      #requests.post("http://localhost:8081/"+"Deployment", data=json.dumps(payload))
+      name=(getter(xmlfile, 'projectName'))
+      EMPTY_CONFIG_XML=setter(name,EMPTY_CONFIG_XML,'projectName')
+      deleteJob(name)
+      #requests.post("http://localhost:8081/Deployment", data=json.dumps(jsonfile))
+      
     elif methodname=="build":
     
       #def setConfigXML(projectName,xmlFile,tagName,newTagValue):
@@ -118,4 +120,4 @@ print(my_job)
 jsonlast=JsonToXml(XmlToJson(my_job))
 print(jsonlast)
 '''
- # prints XML configuration
+# prints XML configuration
