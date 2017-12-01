@@ -98,8 +98,6 @@ def mainFunction(jsonfile):
       request.postRequest(jsonfile, 'deployment')
       
     elif methodname=="build":
-    
-      #def setConfigXML(projectName,xmlFile,tagName,newTagValue):
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'build_result','waiting')
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','build')
       newjson=parser.xml2Json(newxml)
