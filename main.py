@@ -85,7 +85,7 @@ def mainFunction(jsonfile):
     elif methodname=="build":
     
       #def setConfigXML(projectName,xmlFile,tagName,newTagValue):
-      newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'buildResult','waiting)
+      newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'build_result','waiting')
       newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','build')
       newjson=parser.xml2Json(newxml)
       requests.post("http://localhost:8081/build", data=json.dumps(newjson))
@@ -93,7 +93,7 @@ def mainFunction(jsonfile):
     elif methodname=="check-build-status":
       buildstatus=getter(xmlfile,'build_result')
       if buildstatus=='TRUE':
-        jenkinsGetSet.setConfigXML(projectname,xmlfile,'testResult','waiting')
+        jenkinsGetSet.setConfigXML(projectname,xmlfile,'test_result','waiting')
         newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','test')
         newjson=parser.xml2Json(newxml)
         requests.post("http://localhost:8081/test", data=json.dumps(newjson))
@@ -105,12 +105,13 @@ def mainFunction(jsonfile):
       testResult = getter(xmlfile, 'test_result')
       if testResult == 'TRUE':
         jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'deploy')
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'test_result', 'true')
         newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'waiting')
         newjson = parser.xml2Json(newxml)      
         request.postRequest(newjson, 'deployment')
       else:
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'testFailed')
-        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'test_result', 'failed')
+        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'test_failed')
+        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'test_result', 'false')
         newjson = parser.xml2Json(newxml)      
         request.postRequest(newjson, 'code')
     elif methodname=="check-deploy-status":
