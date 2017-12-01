@@ -28,7 +28,7 @@ EMPTY_CONFIG_XML = json_setter(Example_json, 'method', 'new')
 print json_getter(Example_json, 'method')
 
 #Example json string
-EXample_json = '{
+Example_json = '{
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"title": "Request information",
 	"type": "object",
