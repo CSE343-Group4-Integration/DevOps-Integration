@@ -23,6 +23,7 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <buildResult></buildResult><!--Build--><!--Code&plan(fail),Test(Pass)-->
   <buildResultDetail></buildResultDetail><!--Build--><!--Code&Plan(Fail)-->
   <testResult></testResult><!--Test--><!--Deployment(Pass), Code&plan(Fail)-->
+  <deployResult></deployResult>
 </project>'''
 
 JENKINS_USER = 'skole'

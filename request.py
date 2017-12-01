@@ -11,4 +11,4 @@ payload = {
 def postRequest(jsonData, group):
 	requests.post("http://localhost:8081/"+str(group), data=json.dumps(jsonData))
 
-postRequest(payload, 'monitor')
+#postRequest(payload, 'monitor')
