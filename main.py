@@ -1,15 +1,24 @@
 """
 This example shows how to add new command to "Shell" build step
 """
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import xml.etree.ElementTree as ET
 import jenkins
-import json
-import xmltodict
 import parserDeneme as parser
 import GetAndSetXML as jenkinsGetSet
+import request
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import print_function
+
+import xml.etree.ElementTree as ET
+import json
+import jenkins
+import xmltodict
+import GetAndSetXML as jenkinsGetSet
+import parserDeneme as parser
 import request
 
 EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
@@ -49,7 +58,7 @@ TEST_JSON_REQ = '''{  "schema": "http://json-schema.org/draft-04/schema#",
   "title": "Request information",
   "type": "object",
   "description": "Information necessary to access project sources on github repository and method to be applied",
-  "method_name": "createjob",
+  "method_name": "create_job",
   "object_type": "general",
   "github_login": "user",
   "github_password": "pass",
@@ -58,8 +67,9 @@ TEST_JSON_REQ = '''{  "schema": "http://json-schema.org/draft-04/schema#",
   "project_name": "denemeJson"
 }'''
 
-def setter(text, xmlString, tag):
-	e = ET.fromstring(xmlString)
+
+def setter(text, xml_string, tag):
+	e = ET.fromstring(xml_string)
 	for child in e:
 		if(child.tag == tag):
 			child.text = text
@@ -67,97 +77,97 @@ def setter(text, xmlString, tag):
 	return ET.tostring(e)
 
 
-def getter(xmlString, tag):
-  e = ET.fromstring(xmlString)
+def getter(xml_string, tag):
+  e = ET.fromstring(xml_string)
   for child in e:
     if(child.tag == tag):
       return child.text
 
-def createJob(project_name):
+def create_job(project_name):
   server.create_job(project_name,EMPTY_CONFIG_XML)
 
-def deleteJob(project_name):
+def delete_job(project_name):
   server.delete_job(project_name)
 
 
-def mainFunction(jsonfile):
-    xmlfile=parser.Json2Xml(jsonfile)
+def main_function(json_file):
+    xml_file=parser.Json2Xml(json_file)
     print('-----------')
-    print(xmlfile)
-    methodname=getter(xmlfile,'method_name')
+    print(xml_file)
+    method_name = getter(xml_file,'method_name')
     global EMPTY_CONFIG_XML
-    if methodname=="createjob":
-      project_name=(getter(xmlfile, 'project_name'))
-      card_id=(getter(xmlfile, 'card_id'))
-      github_login=(getter(xmlfile, 'github_login'))
-      github_password=(getter(xmlfile, 'github_password'))
-      repository_url=(getter(xmlfile, 'repository_url'))
-      target_url = (getter(xmlfile, 'target_url'))
-      commit_id=(getter(xmlfile, 'commit_id'))
-      
-      EMPTY_CONFIG_XML=setter(project_name,EMPTY_CONFIG_XML,'project_name')
-      EMPTY_CONFIG_XML=setter(card_id,EMPTY_CONFIG_XML,'card_id')
-      EMPTY_CONFIG_XML=setter(github_login,EMPTY_CONFIG_XML,'github_login')
-      EMPTY_CONFIG_XML=setter(github_password,EMPTY_CONFIG_XML,'github_password')
-      EMPTY_CONFIG_XML=setter(repository_url,EMPTY_CONFIG_XML,'repository_url')
-      EMPTY_CONFIG_XML=setter(target_url,EMPTY_CONFIG_XML,'target_url')
-      EMPTY_CONFIG_XML=setter(commit_id,EMPTY_CONFIG_XML,'commit_id')
-      
-      createJob(project_name)
-      request.postRequest(jsonfile, 'deployment')
-      
-    elif methodname=="deletejob":
-      name=(getter(xmlfile, 'project_name'))
-      EMPTY_CONFIG_XML=setter(name,EMPTY_CONFIG_XML,'project_name')
-      deleteJob(name)
-      request.postRequest(jsonfile, 'deployment')
-      
-    elif methodname=="build":
-      newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'build_result','waiting')
-      newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','build')
-      newjson=parser.xml2Json(newxml)
-      request.postRequest(newjson, 'build')
+    if method_name== "create_job":
+      project_name = getter(xml_file, 'project_name')
+      card_id = getter(xml_file, 'card_id')
+      github_login = getter(xml_file, 'github_login')
+      github_password = getter(xml_file, 'github_password')
+      repository_url = getter(xml_file, 'repository_url')
+      target_url = getter(xml_file, 'target_url')
+      commit_id = getter(xml_file, 'commit_id')
 
-    elif methodname=="check-build-status":
-      buildstatus=getter(xmlfile,'build_result')
-      if buildstatus=='TRUE':
-        jenkinsGetSet.setConfigXML(projectname,xmlfile,'test_result','waiting')
-        newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','test')
-        newjson=parser.xml2Json(newxml)
-        request.postRequest(newjson, 'test')
+      EMPTY_CONFIG_XML = setter(project_name, EMPTY_CONFIG_XML, 'project_name')
+      EMPTY_CONFIG_XML = setter(card_id, EMPTY_CONFIG_XML, 'card_id')
+      EMPTY_CONFIG_XML = setter(github_login, EMPTY_CONFIG_XML, 'github_login')
+      EMPTY_CONFIG_XML = setter(github_password, EMPTY_CONFIG_XML, 'github_password')
+      EMPTY_CONFIG_XML = setter(repository_url, EMPTY_CONFIG_XML, 'repository_url')
+      EMPTY_CONFIG_XML = setter(target_url, EMPTY_CONFIG_XML, 'target_url')
+      EMPTY_CONFIG_XML = setter(commit_id, EMPTY_CONFIG_XML, 'commit_id')
+
+      create_job(project_name)
+      request.postRequest(json_file, 'deployment')
+
+    elif method_name == "delete_job":
+      name = getter(xml_file, 'project_name')
+      EMPTY_CONFIG_XML = setter(name,EMPTY_CONFIG_XML,'project_name')
+      delete_job(name)
+      request.postRequest(json_file, 'deployment')
+
+    elif method_name=="build":
+      new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'build_result','waiting')
+      new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'method_name','build')
+      new_json = parser.xml2Json(new_xml)
+      request.postRequest(new_json, 'build')
+
+    elif method_name == "check-build-status":
+      build_status = getter(xml_file,'build_result')
+      if build_status == 'TRUE':
+        jenkinsGetSet.setConfigXML(project_name,xml_file,'test_result','waiting')
+        new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'method_name','test')
+        new_json = parser.xml2Json(new_xml)
+        request.postRequest(new_json, 'test')
       else:
-        newxml=jenkinsGetSet.setConfigXML(projectname,xmlfile,'method_name','build-status')
-        newjson=parser.xml2Json(newxml)
-        request.postRequest(newjson, 'code')
-    elif methodname=="check-test-status":
-      testResult = getter(xmlfile, 'test_result')
+        new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'method_name','build-status')
+        new_json = parser.xml2Json(new_xml)
+        request.postRequest(new_json, 'code')
+    elif method_name == "check-test-status":
+      testResult = getter(xml_file, 'test_result')
       if testResult == 'TRUE':
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'deploy')
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'test_result', 'true')
-        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'waiting')
-        newjson = parser.xml2Json(newxml)      
-        request.postRequest(newjson, 'deployment')
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'deploy')
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'test_result', 'true')
+        new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'deploy_result', 'waiting')
+        new_json = parser.xml2Json(new_xml)
+        request.postRequest(new_json, 'deployment')
       else:
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'test_failed')
-        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'test_result', 'false')
-        newjson = parser.xml2Json(newxml)      
-        request.postRequest(newjson, 'code')
-    elif methodname=="check-deploy-status":
-      deployResult = getter(xmlfile, 'deploy_result')
-      if deployResult == 'TRUE':
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'complete')
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'true')
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'test_failed')
+        new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'test_result', 'false')
+        new_json = parser.xml2Json(new_xml)
+        request.postRequest(new_json, 'code')
+    elif method_name == "check-deploy-status":
+      deploy_result = getter(xml_file, 'deploy_result')
+      if deploy_result == 'TRUE':
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'complete')
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'deploy_result', 'true')
       else:
-        jenkinsGetSet.setConfigXML(projectName, xmlFile, 'method_name', 'deploy_failed')
-        newXml = jenkinsGetSet.setConfigXML(projectName, xmlFile, 'deploy_result', 'false')
-        newjson = parser.xml2Json(newxml)      
-        request.postRequest(newjson, 'code')
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'deploy_failed')
+        new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'deploy_result', 'false')
+        new_json = parser.xml2Json(new_xml)
+        request.postRequest(new_json, 'code')
 
 server = jenkins.Jenkins('http://localhost:8080/', username='skole',password='1234123121')
-#mainFunction(parser.xml2Json(EMPTY_CONFIG_XML))
+#main_function(parser.xml2Json(EMPTY_CONFIG_XML))
 
 # prints XML configuration
 
 
-mainFunction(TEST_JSON_REQ)
+main_function(TEST_JSON_REQ)
 #print(parser.Json2Xml(TEST_JSON_REQ))
