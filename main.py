@@ -4,14 +4,17 @@ This example shows how to add new command to "Shell" build step
 
 from __future__ import print_function
 
-import xml.etree.ElementTree as ET
 import json
+import xml.etree.ElementTree as ET
+
 import jenkins
 import xmltodict
+
 import GetAndSetXML as jenkinsGetSet
+import json_io as jsonGetSet
 import parserDeneme as parser
 import request
-import json_io as jsonGetSet
+
 
 EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <project>
@@ -63,31 +66,6 @@ TEST_JSON_REQ = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
        "required": [ "object_type", "github_login","github_password", "repository_url", "project_name", "method" ]
 }
 '''
-
-TEST_JSON_REQ = '''{
-	"$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "Request information",
-	"type": "object",
-	"description": "Information necessary to access project sources on github repository and method to be applied",
-	"properties": {
-		"object_type": "string"
-		,
-		"github_login": "string"
-		,
-		"github_password": "string"
-		,
-		"card_id": "string"
-		,
-		"repository_url": "string"
-,
-		"project_name": "bedooo"
-		
-		,
-		"method": "delete_job"
-		
-	}
-}'''
-
 
 def setter(text, xml_string, tag):
 	e = ET.fromstring(xml_string)
