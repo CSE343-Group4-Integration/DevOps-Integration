@@ -14,7 +14,7 @@ import GetAndSetXML as jenkinsGetSet
 import json_io as jsonGetSet
 import parserDeneme as parser
 import request
-
+import createGeneralReq.py as createGeneralRequest
 
 EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <project>
