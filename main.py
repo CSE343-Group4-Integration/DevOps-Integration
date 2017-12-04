@@ -117,22 +117,26 @@ def main_function(json_file):
       name = jsonGetSet.json_getter(json_file, 'project_name')
       delete_job(name)
       request.postRequest(json_file, 'deployment')
+   
     elif method_name=="build":
-      new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'build_result','waiting')
-      new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'method_name','build')
-      new_json = parser.xml2Json(new_xml)
+      jenkinsGetSet.reConfig(project_name,'build_result','waiting')
+      new_json=createGeneralRequest.createGeneralReq(project_name)
+      new_json=jsonGetSet.json_setter(new_json,'method_name','build')
       request.postRequest(new_json, 'build')
+
+
     elif method_name == "check-build-status":
-      build_status = getter(xml_file,'build_result')
+      build_status = jsonGetSet.json_getter(json_file,'build_result')
       if build_status == 'TRUE':
-        jenkinsGetSet.setConfigXML(project_name,xml_file,'test_result','waiting')
-        new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'method_name','test')
-        new_json = parser.xml2Json(new_xml)
+        jenkinsGetSet.reConfig(project_name,'build_result','true')
+        jenkinsGetSet.reConfig(project_name,'test_result','waiting')
+        new_json=createGeneralRequest.createGeneralReq(project_name)
+        new_json=jsonGetSet.json_setter(new_json,'method_name','test')
         request.postRequest(new_json, 'test')
       else:
-        new_xml = jenkinsGetSet.setConfigXML(project_name,xml_file,'method_name','build-status')
-        new_json = parser.xml2Json(new_xml)
-        request.postRequest(new_json, 'code')
+        jenkinsGetSet.reConfig(project_name,xml_file,'build_result','false')
+        response_json=jsonGetSet.json_setter(json_file,'method_name','build-status')
+        request.postRequest(response_json, 'code')
     elif method_name == "check-test-status":
       testResult = getter(xml_file, 'test_result')
       if testResult == 'TRUE':
