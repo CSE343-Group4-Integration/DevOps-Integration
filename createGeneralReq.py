@@ -7,7 +7,7 @@ tags = ['object_type', 'github_login', 'github_password', 'card_id', 'repository
 
 server = jenkins.Jenkins('http://localhost:8080', username='skole', password='1234123121')
 	
-def creteGeneralReq(projectName):
+def createGeneralReq(projectName):
 	generalReq = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
        "title": "Request information",
        "type": "object",
