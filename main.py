@@ -1,16 +1,7 @@
 """
 This example shows how to add new command to "Shell" build step
 """
-# !/usr/bin/env python
-# -*- coding: utf-8 -*-
-from __future__ import print_function
-import xml.etree.ElementTree as ET
-import jenkins
-import parserDeneme as parser
-import GetAndSetXML as jenkinsGetSet
-import request
-# !/usr/bin/env python
-# -*- coding: utf-8 -*-
+
 from __future__ import print_function
 
 import xml.etree.ElementTree as ET
@@ -20,6 +11,7 @@ import xmltodict
 import GetAndSetXML as jenkinsGetSet
 import parserDeneme as parser
 import request
+import json_io as jsonGetSet
 
 EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 <project>
@@ -54,6 +46,7 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 
 </project>'''
 
+<<<<<<< HEAD
 TEST_JSON_REQ = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
        "title": "Request information",
        "type": "object",
@@ -70,6 +63,31 @@ TEST_JSON_REQ = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
        "required": [ "object_type", "github_login","github_password", "repository_url", "project_name", "method" ]
 }
 '''
+=======
+TEST_JSON_REQ = '''{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Request information",
+	"type": "object",
+	"description": "Information necessary to access project sources on github repository and method to be applied",
+	"properties": {
+		"object_type": "string"
+		,
+		"github_login": "string"
+		,
+		"github_password": "string"
+		,
+		"card_id": "string"
+		,
+		"repository_url": "string"
+,
+		"project_name": "bedooo"
+		
+		,
+		"method": "create_job"
+		
+	}
+}'''
+>>>>>>> master
 
 
 def setter(text, xml_string, tag):
@@ -95,19 +113,17 @@ def delete_job(project_name):
 
 
 def main_function(json_file):
-    xml_file=parser.Json2Xml(json_file)
-    print('-----------')
-    print(xml_file)
-    method_name = getter(xml_file,'method_name')
+    
+    method_name = jsonGetSet.json_getter(json_file,'method')
     global EMPTY_CONFIG_XML
     if method_name== "create_job":
-      project_name = getter(xml_file, 'project_name')
-      card_id = getter(xml_file, 'card_id')
-      github_login = getter(xml_file, 'github_login')
-      github_password = getter(xml_file, 'github_password')
-      repository_url = getter(xml_file, 'repository_url')
-      target_url = getter(xml_file, 'target_url')
-      commit_id = getter(xml_file, 'commit_id')
+      project_name = jsonGetSet.json_getter(json_file, 'project_name')
+      card_id = jsonGetSet.json_getter(json_file, 'card_id')
+      github_login = jsonGetSet.json_getter(json_file, 'github_login')
+      github_password = jsonGetSet.json_getter(json_file, 'github_password')
+      repository_url = jsonGetSet.json_getter(json_file, 'repository_url')
+      target_url = jsonGetSet.json_getter(json_file, 'target_url')
+      commit_id = jsonGetSet.json_getter(json_file, 'commit_id')
 
       EMPTY_CONFIG_XML = setter(project_name, EMPTY_CONFIG_XML, 'project_name')
       EMPTY_CONFIG_XML = setter(card_id, EMPTY_CONFIG_XML, 'card_id')
@@ -116,12 +132,12 @@ def main_function(json_file):
       EMPTY_CONFIG_XML = setter(repository_url, EMPTY_CONFIG_XML, 'repository_url')
       EMPTY_CONFIG_XML = setter(target_url, EMPTY_CONFIG_XML, 'target_url')
       EMPTY_CONFIG_XML = setter(commit_id, EMPTY_CONFIG_XML, 'commit_id')
-
+		
       create_job(project_name)
       request.postRequest(json_file, 'deployment')
 
     elif method_name == "delete_job":
-      name = getter(xml_file, 'project_name')
+      name = getter(json_file, 'project_name')
       EMPTY_CONFIG_XML = setter(name,EMPTY_CONFIG_XML,'project_name')
       delete_job(name)
       request.postRequest(json_file, 'deployment')
