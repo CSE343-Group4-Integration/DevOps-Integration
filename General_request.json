@@ -1,0 +1,15 @@
+{  "$schema": "http://json-schema.org/draft-04/schema#",
+       "title": "Request information",
+       "type": "object",
+       "description": "Information necessary to access project sources on github repository and method to be applied",
+       "properties": {
+         "object_type": {"type": "string"},
+         "github_login": { "type": "string" },
+         "github_password": { "type": "string" },
+         "card_id": { "type": "string" },
+         "repository_url": { "type": "string" },
+         "project_name": { "type": "string" },
+         "method": { "type": "string" }
+       },
+       "required": [ "object_type", "github_login","github_password", "repository_url", "project_name", "method" ]
+}
