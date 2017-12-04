@@ -54,18 +54,22 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 
 </project>'''
 
-TEST_JSON_REQ = '''{  "schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Request information",
-  "type": "object",
-  "description": "Information necessary to access project sources on github repository and method to be applied",
-  "method_name": "create_job",
-  "object_type": "general",
-  "github_login": "user",
-  "github_password": "pass",
-  "card_id": "1",
-  "repository_url": "https://github.com/CSE343-Group4-Integration/DevOps-Integration",
-  "project_name": "denemeJson"
-}'''
+TEST_JSON_REQ = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
+       "title": "Request information",
+       "type": "object",
+       "description": "Information necessary to access project sources on github repository and method to be applied",
+       "properties": {
+         "object_type": {"type": "string"},
+         "github_login": { "type": "string" },
+         "github_password": { "type": "string" },
+         "card_id": { "type": "string" },
+         "repository_url": { "type": "string" },
+         "project_name": { "type": "string" },
+         "method": { "type": "string" }
+       },
+       "required": [ "object_type", "github_login","github_password", "repository_url", "project_name", "method" ]
+}
+'''
 
 
 def setter(text, xml_string, tag):
@@ -142,16 +146,16 @@ def main_function(json_file):
     elif method_name == "check-test-status":
       testResult = getter(xml_file, 'test_result')
       if testResult == 'TRUE':
-        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'deploy')
-        jenkinsGetSet.setConfigXML(project_name, xml_file, 'test_result', 'true')
-        new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'deploy_result', 'waiting')
-        new_json = parser.xml2Json(new_xml)
-        request.postRequest(new_json, 'deployment')
+        jenkinsGetSet.reconfig(project_name, 'method_name', 'deploy')
+        jenkinsGetSet.reConfig(project_name, 'test_result', 'true')
+        jenkinsGetSet.reConfig(project_name, 'deploy_result', 'waiting')
+        request_json = createGeneralRequest(project_name)
+        request.postRequest(request_json, 'deployment')
       else:
-        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'test_failed')
-        new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'test_result', 'false')
-        new_json = parser.xml2Json(new_xml)
-        request.postRequest(new_json, 'code')
+        jenkinsGetSet.reConfig(project_name, 'method_name', 'test_failed')
+        jenkinsGetSet.reConfig(project_name, 'test_result', 'false')
+        request_json = createGeneralRequest(project_name)
+        request.postRequest(request_json, 'code')
     elif method_name == "check-deploy-status":
       deploy_result = getter(xml_file, 'deploy_result')
       if deploy_result == 'TRUE':
