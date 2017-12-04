@@ -1,0 +1,12 @@
+{  "$schema": "http://json-schema.org/draft-04/schema#",
+       "title": "Request information for monitoring module",
+       "type": "object",
+       "description": "Contains information about the machine where the application is deployed",
+       "properties": {
+         "object_type": {"type": "string"},
+         "machine_info": { "type": "string" },
+         "app_info": { "type": "string" },
+         "method": { "type": "string" }
+       },
+       "required": [ "object_type", "machine_info","app_info", "method" ]
+}
