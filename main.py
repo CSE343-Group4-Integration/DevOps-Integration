@@ -152,6 +152,7 @@ def main_function(json_file):
         request_json = createGeneralRequest(project_name)
         request.postRequest(request_json, 'deployment')
       else:
+<<<<<<< HEAD
         jenkinsGetSet.reConfig(project_name, 'method_name', 'test_failed')
         jenkinsGetSet.reConfig(project_name, 'test_result', 'false')
         request_json = createGeneralRequest(project_name)
@@ -166,6 +167,25 @@ def main_function(json_file):
         new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'deploy_result', 'false')
         new_json = parser.xml2Json(new_xml)
         request.postRequest(new_json, 'code')
+=======
+        jenkinsGetSet.setConfigXML(project_name, xml_file, 'method_name', 'test_failed')
+        new_xml = jenkinsGetSet.setConfigXML(project_name, xml_file, 'test_result', 'false')
+        new_json = parser.xml2Json(new_xml)
+        request.postRequest(new_json, 'code')
+	elif method_name == "check-deploy-status":
+		deploy_result = json_getter(json_file, 'deploy_result')
+		if deploy_result == 'TRUE':
+			jenkinsGetSet.reconfig(project_name, 'method_name', 'complete')
+			jenkinsGetSet.reconfig(project_name, 'deploy_result', 'true')
+			json_file = json_getter(json_file, 'method_name', 'complete')
+			json_file = json_getter(json_file, 'deploy_result', 'true')
+		else:
+			jenkinsGetSet.reconfig(project_name, 'method_name', 'deploy_failed')
+			jenkinsGetSet.reconfig(project_name, 'deploy_result', 'false')
+			json_file = json_getter(json_file, 'method_name', 'deploy_failed')
+			json_file = json_getter(json_file, 'deploy_result', 'false')
+			request.postRequest(json_file, 'code')
+>>>>>>> master
 
 server = jenkins.Jenkins('http://localhost:8080/', username='skole',password='1234123121')
 #main_function(parser.xml2Json(EMPTY_CONFIG_XML))
