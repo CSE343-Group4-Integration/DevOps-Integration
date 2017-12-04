@@ -1,0 +1,13 @@
+{  "$schema": "http://json-schema.org/draft-04/schema#",
+       "title": "Response information",
+       "type": "object",
+       "description": "Contains operation(method) and its execution status with description",
+       "properties": {
+         "object_type": {"type": "string"},
+         "operation": { "type": "string" },
+         "status": { "type": "string" },
+         "description": { "type": "string" },
+         "project_name": {"type": "string"}
+       },
+       "required": [ "project_name", "object_type", "operation","status", "description" ]
+}
