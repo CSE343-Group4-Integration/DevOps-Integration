@@ -166,8 +166,7 @@ def main_function(json_file):
       else:
         jenkinsGetSet.reConfig(project_name, 'method_name', 'test_failed')
         jenkinsGetSet.reConfig(project_name, 'test_result', 'false')
-        request_json = createGeneralRequest(project_name)
-        request.postRequest(request_json, 'code')
+        request.postRequest(json_file, 'code')
     elif method_name == 'check-deploy-status':
       deploy_result = json_getter(json_file, 'deploy_result')
       if deploy_result == 'TRUE':
