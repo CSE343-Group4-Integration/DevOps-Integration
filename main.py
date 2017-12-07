@@ -49,35 +49,25 @@ EMPTY_CONFIG_XML = '''<?xml version='1.0' encoding='UTF-8'?>
 </project>'''
 
 
-TEST_JSON_REQ = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
-       "title": "Request information",
-       "type": "object",
-       "description": "Information necessary to access project sources on github repository and method to be applied",
-       "properties": {
+TEST_JSON_REQ = '''{
          "object_type": "tmp",
          "github_login": "tmp",
          "github_password": "tmp",
          "card_id": "tmp",
          "repository_url": "tmp",
          "project_name": "sondeneme",
-         "method_name": "build"
-       }
-}
-'''
-TEST_JSON_RES = '''{  "$schema": "http://json-schema.org/draft-04/schema#",
-       "title": "Response information",
-       "type": "object",
-       "description": "Contains operation(method) and its execution status with description",
-       "properties": {
+         "method": "create_job"
+       
+}'''
+TEST_JSON_RES = ''' {
          "object_type": "tmp",
          "operation": "tmp",
-         "status": "FALSE",
+         "status": "TRUE",
          "description": "tmp",
          "project_name": "sondeneme",
-         "method_name" : "check-deploy-status"
-       }
+         "method" : "check-build-status"
+       
 }'''
-
 def setter(text, xml_string, tag):
 	e = ET.fromstring(xml_string)
 	for child in e:
@@ -101,7 +91,8 @@ def delete_job(project_name):
 
 
 def main_function(json_file):
-    method_name = jsonGetSet.json_getter(json_file,'method_name')
+    method_name = jsonGetSet.json_getter(json_file,'method')
+    
     project_name = jsonGetSet.json_getter(json_file, 'project_name')
     global EMPTY_CONFIG_XML
     if method_name== "create_job":
@@ -122,7 +113,7 @@ def main_function(json_file):
       EMPTY_CONFIG_XML = setter(commit_id, EMPTY_CONFIG_XML, 'commit_id')
 		
       create_job(project_name)
-      request.postRequest(json_file, 'deployment')
+      request.postRequest(json_file, 'deploy')
 
     elif method_name == "delete_job":
       name = jsonGetSet.json_getter(json_file, 'project_name')
@@ -132,7 +123,7 @@ def main_function(json_file):
     elif method_name=="build":
       print(jenkinsGetSet.reConfig(project_name,'build_result','waiting'))
       new_json = createGeneralReq.createGeneralReq(project_name)
-      new_json = jsonGetSet.json_setter(new_json,'method_name','build')
+      new_json = jsonGetSet.json_setter(new_json,'method','build')
       request.postRequest(new_json, 'build')
     elif method_name == "check-build-status":
       build_status = jsonGetSet.json_getter(json_file,'status')
@@ -140,41 +131,42 @@ def main_function(json_file):
         jenkinsGetSet.reConfig(project_name,'build_result','true')
         jenkinsGetSet.reConfig(project_name,'test_result','waiting')
         new_json = createGeneralReq.createGeneralReq(project_name)
-        new_json = jsonGetSet.json_setter(new_json,'method_name','test')
+        new_json = jsonGetSet.json_setter(new_json,'method','test')
         request.postRequest(new_json, 'test')
       else:
         jenkinsGetSet.reConfig(project_name,'build_result','false')
-        response_json=jsonGetSet.json_setter(json_file,'method_name','build-status')
+        response_json=jsonGetSet.json_setter(json_file,'method','build-status')
         request.postRequest(response_json, 'code')
     elif method_name == "check-test-status":
       testResult = jsonGetSet.json_getter(json_file,'status')
       if testResult == 'TRUE':
-        jenkinsGetSet.reConfig(project_name, 'method_name', 'deploy')
+        jenkinsGetSet.reConfig(project_name, 'method', 'deploy')
         jenkinsGetSet.reConfig(project_name, 'test_result', 'true')
         jenkinsGetSet.reConfig(project_name, 'deploy_result', 'waiting')
         request_json = createGeneralReq.createGeneralReq(project_name)
         request.postRequest(request_json, 'deployment')
       else:
-        jenkinsGetSet.reConfig(project_name, 'method_name', 'test_failed')
+        jenkinsGetSet.reConfig(project_name, 'method', 'test_failed')
         jenkinsGetSet.reConfig(project_name, 'test_result', 'false')
         request.postRequest(json_file, 'code')
     elif method_name == 'check-deploy-status':
       deploy_result = jsonGetSet.json_getter(json_file, 'status')
       if deploy_result == 'TRUE':
-        jenkinsGetSet.reConfig(project_name, 'method_name', 'complete')
+        jenkinsGetSet.reConfig(project_name, 'method', 'complete')
         jenkinsGetSet.reConfig(project_name, 'deploy_result', 'true')
       else:
-        jenkinsGetSet.reConfig(project_name, 'method_name', 'deploy_failed')
+        jenkinsGetSet.reConfig(project_name, 'method', 'deploy_failed')
         jenkinsGetSet.reConfig(project_name, 'deploy_result', 'false')
         request_json = createGeneralReq.createGeneralReq(project_name)
         request.postRequest(json_file, 'code')
 
-server = jenkins.Jenkins('http://localhost:8080/', username='skole',password='1234123121')
+server = jenkins.Jenkins('http://localhost:8080/', username='admin',password='123456')
 #main_function(parser.xml2Json(EMPTY_CONFIG_XML))
 
 # prints XML configuration
 
 
-main_function(TEST_JSON_RES)
-#print(parser.Json2Xml(TEST_JSON_REQ))
+
+#main_function(TEST_JSON_RES)
+#print(parser.Json2Xml(TEST_JSON_RES))
 print(server.get_job_config('sondeneme'))
